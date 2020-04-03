@@ -1,0 +1,44 @@
+﻿@model IEnumerable<CRUDSinInyeccionASP.Clases.CargoDetalle>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Cargos Empleados</h1>
+
+<form asp-action="Index" method="post">
+    <div class="form-actions no-color">
+        <p>
+            Filtro: <input type="text" name="busqueda" value="" />
+            <input type="submit" value="Buscar" class="btn btn-primary" />
+            <a asp-action="Index">Todos los registros</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Cargo)
+            </th>
+            <th>
+                <a asp-action="CrearEditarCargo" class="btn btn-outline-success"><i class="far fa-plus-square"></i> Crear Cargo</a>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                <i class="fas fa-users"></i> @Html.DisplayFor(modelItem => item.Cargo)
+            </td>
+            <td>
+                <a asp-action="CrearEditarCargo" asp-route-id="@item.IdCargo"><i class="far fa-edit"></i>Editar</a> 
+
+                <a asp-action="Eliminar" asp-route-id="@item.IdCargo" class="text-danger m1-1" onclick="return confirm ('Deseas eliminar este cargo?')"><i class="fa fa-trash-alt fa-lg"></i>Eliminar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
