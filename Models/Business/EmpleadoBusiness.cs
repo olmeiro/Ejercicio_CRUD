@@ -21,26 +21,44 @@ namespace CRUDSinInyeccionASP.Models.Business
         public async Task<IEnumerable<EmpleadoDetalle>> obtenerEmpleadosTodos()
         {
             //return await _context.Empleados.ToListAsync();
-
-            await using (_context)
-            {
-                IEnumerable<EmpleadoDetalle> listaEmpleadoDetalles =
+            IEnumerable<Empleado> listaEmpleados;
+           
+            
+                listaEmpleados =
                 (from empleado in _context.Empleados
-                 join cargo in _context.CargoEmpleados
-                 on empleado.Cargo equals
-                 cargo.IdCargo
-                 select new EmpleadoDetalle
-                 {
-                     IdEmpleado = empleado.IdEmpleado,
-                     Nombre = empleado.Nombre,
-                     Cargo = cargo.Cargo,
-                     Telefono = empleado.Telefono,
-                     Documento = empleado.Documento
-                 }
+                 select empleado
                  ).ToList();
-                        
-                return listaEmpleadoDetalles;
-            }
+              
+            
+            IEnumerable<EmpleadoDetalle> listaEmpleadoDetalle =
+               (from empleado in listaEmpleados
+                select new EmpleadoDetalle
+                {
+                    IdEmpleado = empleado.IdEmpleado,
+                    Nombre = empleado.Nombre,
+                    Cargo = traerCargo(empleado.Cargo),
+                    Telefono = empleado.Telefono,
+                    Documento = empleado.Documento
+                });
+            return listaEmpleadoDetalle;
+
+        }
+
+        public string traerCargo(int idCargo)
+        {
+                CargoEmpleado cargo =
+                (from miCargo in _context.CargoEmpleados
+                 where (miCargo.IdCargo == idCargo)
+                 select miCargo).FirstOrDefault();
+
+                if (cargo == null)
+                {
+                    return "Por Definir";
+                }
+                else
+                {
+                    return cargo.Cargo;
+                }
         }
 
         public async Task<IEnumerable<EmpleadoDetalle>> obtenerEmpleadosPorNombrePorId(string busqueda)
